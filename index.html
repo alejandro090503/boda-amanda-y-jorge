@@ -210,12 +210,6 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 
 /* ── DRESS CODE ── */
 .dc-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--text);text-align:center;line-height:1.75;margin-bottom:24px}
-.dc-figures{display:flex;align-items:flex-end;justify-content:center;gap:36px;margin:6px auto 28px}
-.dc-fig{display:flex;flex-direction:column;align-items:center;gap:12px;flex:1;max-width:130px}
-.dc-fig img{height:200px;width:auto;max-width:100%;display:block;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,.22))}
-.dc-fig-label{font-family:'Italiana',serif;font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--dark)}
-.dc-desc{font-family:'Cormorant Garamond',serif;font-size:16.5px;line-height:1.7;color:var(--text);padding:0 18px 4px;text-align:center}
-.dc-figures-soon{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--gold);opacity:.8;padding:6px 18px 20px}
 .dc-avoid-lbl{font-family:'Italiana',serif;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);text-align:center;display:block;margin:20px 0 12px;opacity:.8}
 /* Son 7 colores a evitar: sin wrap se salian de la pantalla en movil */
 .dc-avoid-row{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 18px;margin-bottom:4px;padding:0 4px}
@@ -499,6 +493,35 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 }
 
 
+/* ── FONDOS POR SECCION ────────────────────────────────────────────
+   Marmol negro con vetas de oro y tinta dorada, alternados para que
+   ninguna seccion repita la de al lado. Opacidad baja: son textura,
+   no imagen — el texto arena tiene que seguir leyendose encima. */
+#sinv,#scd,#sfam,#subic,#siti,#galeria,#sdc,#lodging,#regalos,#salbum,#rsvp,#footer{
+  position:relative;overflow:hidden;isolation:isolate}
+#sinv::before,#scd::before,#sfam::before,#subic::before,#siti::before,
+#galeria::before,#sdc::before,#lodging::before,#regalos::before,
+#salbum::before,#rsvp::before,#footer::before{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background-size:cover;background-position:center;background-repeat:no-repeat}
+#sinv::before   {background-image:url('bg-1.webp');opacity:.55}
+#scd::before    {background-image:url('bg-2.webp');opacity:.42}
+#sfam::before   {background-image:url('bg-3.webp');opacity:.40}
+#subic::before  {background-image:url('bg-4.webp');opacity:.45}
+#siti::before   {background-image:url('bg-1.webp');opacity:.42}
+#galeria::before{background-image:url('bg-2.webp');opacity:.38}
+#sdc::before    {background-image:url('bg-3.webp');opacity:.38}
+#lodging::before{background-image:url('bg-4.webp');opacity:.40}
+#regalos::before{background-image:url('bg-1.webp');opacity:.50}
+#salbum::before {background-image:url('bg-2.webp');opacity:.40}
+#rsvp::before   {background-image:url('bg-3.webp');opacity:.45}
+#footer::before {background-image:url('bg-4.webp');opacity:.42}
+/* Velo que asienta la textura sobre el negro y mantiene el contraste del texto */
+#sinv::after,#scd::after,#sfam::after,#subic::after,#siti::after,
+#galeria::after,#sdc::after,#lodging::after,#regalos::after,
+#salbum::after,#rsvp::after,#footer::after{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(10,10,10,.55) 0%,rgba(10,10,10,.72) 60%,rgba(10,10,10,.9) 100%)}
 
 /* ── CAJA DE LOS TITULOS CALIGRAFICOS ──────────────────────────────
    Great Vibes dibuja rasgos que se salen del line-box. Como el relleno
@@ -528,7 +551,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
    sobre el fondo negro de la seccion se perdian. */
 .dc-figures{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
 .dc-fig{background:linear-gradient(170deg,#E8DCC8 0%,#D4C5B2 100%);
-  border:1px solid rgba(122,92,34,.38);border-radius:10px;
+  border:1px solid rgba(215,194,137,.55);border-radius:10px;
   padding:18px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:12px;
   box-shadow:0 10px 26px rgba(0,0,0,.45)}
 /* Las dos ilustraciones tienen proporciones distintas: se les fija la misma
@@ -559,84 +582,6 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   box-shadow:0 8px 22px rgba(0,0,0,.4)}
 .gift-logo img{width:100%;height:auto;display:block}
 .gift-num{color:var(--gold-light)}
-
-/* ── RITMO CLARO / OSCURO ──────────────────────────────────────────
-   La invitacion alterna zonas de papel claro y zonas de marmol muy oscuro.
-   Los fondos son los assets del cliente: los claros van tal cual y los
-   oscuros son el marmol hundido con multiply + mezcla a negro.
-   En las zonas claras se invierte el tratamiento del texto (oscuro sobre
-   claro, oro profundo en los titulos) para que todo siga leyendose. */
-#sinv,#scd,#sfam,#subic,#siti,#galeria,#sdc,#lodging,#regalos,#salbum,#rsvp,#footer{
-  position:relative;overflow:hidden;isolation:isolate}
-#sinv::before,#scd::before,#sfam::before,#subic::before,#siti::before,
-#galeria::before,#sdc::before,#lodging::before,#regalos::before,
-#salbum::before,#rsvp::before{
-  content:'';position:absolute;inset:0;z-index:-2;
-  background-size:cover;background-position:center;background-repeat:no-repeat}
-
-/* Zonas claras — papel del cliente, a plena opacidad */
-#sinv::before   {background-image:url('bg-claro-1.webp')}
-#sfam::before   {background-image:url('bg-claro-2.webp')}
-#siti::before   {background-image:url('bg-claro-3.webp')}
-#sdc::before    {background-image:url('bg-claro-1.webp')}
-#salbum::before {background-image:url('bg-claro-2.webp')}
-.is-light{background:#F5EFE4}
-/* Velo claro: asienta la textura y despeja el centro para el texto */
-.is-light::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse at center,rgba(250,246,238,.86) 0%,rgba(250,246,238,.6) 55%,rgba(250,246,238,.25) 100%)}
-
-/* Zonas oscuras — marmol hundido */
-#scd::before    {background-image:url('bg-oscuro-1.webp');opacity:.85}
-#subic::before  {background-image:url('bg-oscuro-2.webp');opacity:.85}
-#galeria::before{background-image:url('bg-oscuro-3.webp');opacity:.7}
-#lodging::before{background-image:url('bg-oscuro-1.webp');opacity:.7}
-#regalos::before{background-image:url('bg-oscuro-2.webp');opacity:.9}
-#rsvp::before   {background-image:url('bg-oscuro-3.webp');opacity:.8}
-#scd::after,#subic::after,#galeria::after,#lodging::after,
-#regalos::after,#rsvp::after,#footer::after{
-  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse at center,rgba(10,10,10,.6) 0%,rgba(10,10,10,.76) 60%,rgba(10,10,10,.92) 100%)}
-
-/* ── ZONAS CLARAS: texto invertido ─────────────────────────────── */
-.is-light{color:#2A2013}
-.is-light p,.is-light .sub,.is-light .itin-ev,.is-light .dc-text,.is-light .dc-desc,
-.is-light .loc-txt,.is-light .album-msg{color:#2A2013}
-.is-light .loc-venue--long{color:#1C1508}
-/* Titulos: el barrido dorado en su version profunda. El claro (#F6EDCF)
-   sobre papel crema desaparece. */
-.is-light .heading,.is-light .heading-sm,.is-light .loc-venue,.is-light .eyebrow,
-.is-light .itin-time,.is-light .fam-role-lbl,.is-light .fam-and-txt,
-.is-light .album-qr-note{
-  background-image:linear-gradient(100deg,
-    #5E4416 0%,#6B4F1C 10%,#7A5C22 20%,#96742A 27%,#B08A38 32%,#96742A 37%,
-    #8A6A28 46%,#5E4416 58%,#7A5C22 70%,#A8822F 80%,#6B4F1C 90%,#5E4416 100%);
-  filter:drop-shadow(0 1px 1px rgba(255,255,255,.55));
-}
-.is-light .fam-name{
-  background:none;-webkit-text-fill-color:#2A2013;color:#2A2013;
-  animation:none;filter:none}
-/* Paneles: papel un punto mas claro que el fondo, borde dorado profundo */
-.is-light .card,.is-light .fam-card,.is-light .fam-padrinos{
-  background:rgba(255,252,246,.78);border-color:rgba(122,92,34,.34);
-  box-shadow:0 10px 26px rgba(90,70,30,.14)}
-.is-light .orn-line{background:linear-gradient(to right,transparent,rgba(122,92,34,.5),transparent)}
-.is-light .orn-diamond,.is-light .orn-diamond-sm{background:#8A6A28}
-.is-light .itin-dot{background:#8A6A28;box-shadow:0 0 0 3px rgba(138,106,40,.16)}
-.is-light .itin-dot.sage{background:#B08A38;box-shadow:0 0 0 3px rgba(176,138,56,.14)}
-.is-light .itin-list::before{background:rgba(122,92,34,.26)}
-.is-light .no-kids{background:rgba(122,92,34,.06);border-color:rgba(122,92,34,.3);color:#2A2013}
-.is-light .album-qr-note{color:#6B4F1C;-webkit-text-fill-color:#6B4F1C;background:none;animation:none;filter:none;opacity:1}
-.is-light .padrinos-dots button{border-color:rgba(122,92,34,.55)}
-.is-light .padrinos-dots button.on{background:#8A6A28}
-.is-light .dc-avoid-lbl{color:#6B4F1C;-webkit-text-fill-color:#6B4F1C;background:none;animation:none;filter:none}
-.is-light .dc-avoid-name{color:#2A2013}
-.is-light .dc-avoid-circle{border-color:rgba(42,32,19,.35)}
-.is-light .cd-value{color:#2A2013}
-/* Sobre papel, el boton se lee mejor en tinta con letra dorada */
-.is-light .btn-map{background:#241B10;color:#EBDDB2}
-.is-light .album-qr-box{background:rgba(255,252,246,.9);border-color:rgba(122,92,34,.34)}
-.is-light .qr-cell,.is-light .qr-finder{background:#2A2013}
-.is-light .qr-finder{border-color:#2A2013}
 </style>
 </head>
 <body>
@@ -683,13 +628,13 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   </section>
 
   <!-- INVITACIÓN -->
-  <section id="sinv" class="sec is-light rv" style="text-align:center;overflow:hidden">
+  <section id="sinv" class="sec rv" style="text-align:center;overflow:hidden">
     <span class="eyebrow">Con la gracia de Dios</span>
     <div class="orn"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
     <h1 class="heading">Amanda y Jorge</h1>
-    <p class="sub" style="margin-top:8px;font-weight:600">tienen el honor de invitarte a<br>su boda</p>
+    <p class="sub" style="margin-top:8px;font-weight:600;color:#EBDDB2">tienen el honor de invitarte a<br>su boda</p>
     <div class="orn bot"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
-    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1.8;margin-top:24px">
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:#F3E4D4;line-height:1.8;margin-top:24px;opacity:.92">
       Sábado, 21 de Noviembre de 2026<br>
       León, Guanajuato
     </p>
@@ -724,7 +669,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   </section>
 
   <!-- NUESTRAS FAMILIAS -->
-  <section id="sfam" class="sec is-light rv" style="text-align:center">
+  <section id="sfam" class="sec rv" style="text-align:center">
     <span class="eyebrow">Con la bendición de</span>
     <h2 class="heading-sm">Nuestras Familias</h2>
     <div class="orn" style="margin-top:16px"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
@@ -818,7 +763,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   </section>
 
   <!-- ITINERARIO -->
-  <section id="siti" class="sec is-light rv" style="text-align:center;overflow:hidden">
+  <section id="siti" class="sec rv" style="text-align:center;overflow:hidden">
     <span class="eyebrow">Programa del Día</span>
     <h2 class="heading-sm">Itinerario</h2>
     <div class="orn" style="margin-top:16px"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
@@ -865,7 +810,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   </section>
 
   <!-- DRESS CODE -->
-  <section id="sdc" class="sec is-light rv" style="text-align:center">
+  <section id="sdc" class="sec rv" style="text-align:center">
     <span class="eyebrow">Código de Vestimenta</span>
     <h2 class="heading-sm">Formal</h2>
     <div class="orn" style="margin-top:16px"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
@@ -962,7 +907,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   </div>
 
   <!-- ÁLBUM DE FOTOS -->
-  <section id="salbum" class="sec is-light rv" style="text-align:center">
+  <section id="salbum" class="sec rv" style="text-align:center">
     <span class="eyebrow">Comparte tus Fotos</span>
     <h2 class="heading-sm">Álbum Compartido</h2>
     <div class="orn" style="margin-top:16px"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
