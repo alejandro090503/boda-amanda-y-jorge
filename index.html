@@ -423,6 +423,100 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 .sec-bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;pointer-events:none;z-index:-1}
 
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ── RESPLANDOR DE ORO ─────────────────────────────────────────────
+   El degradado se recorta contra el texto y se desplaza; el resplandor va en
+   drop-shadow porque text-shadow no se ve con el relleno transparente.
+   Version para FONDO CLARO: el punto mas alto del barrido se topa en #C9A04E,
+   asi el destello nunca queda menos legible que el dorado solido de antes. */
+.heading,.heading-sm,.loc-venue,.rsvp-title,.footer-names,.footer-date,
+.gift-modal-ttl,.hosp-name,.dc-head-txt strong,.eyebrow,.itin-time,
+.cd-lbl,.fam-and-txt,.fam-role-lbl,.rsvp-deadline,.album-qr-note{
+  background-image:linear-gradient(100deg,
+    #6B4F1C 0%,#7A5C22 10%,#8A6A28 20%,#A8822F 27%,#C9A04E 32%,#A8822F 37%,
+    #9A7830 46%,#6B4F1C 58%,#8A6A28 70%,#B98F3C 80%,#7A5C22 90%,#6B4F1C 100%);
+  /* Sin no-repeat: con background-size 300% las posiciones >100% caen fuera de
+     la caja y el degradado dejaria de pintar; al repetir siempre cubre el texto. */
+  background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  text-shadow:none;
+  animation:goldSweep 5s linear infinite;
+  filter:drop-shadow(0 0 5px rgba(201,160,78,.45)) drop-shadow(0 0 16px rgba(201,160,78,.25));
+  /* background-clip:text solo pinta dentro de la caja y los rasgos de Great Vibes
+     sobresalen, quedando cortados. Se ensancha la caja con padding y se cancela
+     con margen negativo para no mover el layout. */
+  padding-left:.34em;padding-right:.34em;
+  margin-left:-.34em;margin-right:-.34em;
+}
+.eyebrow,.itin-time,.cd-lbl,.fam-role-lbl,.rsvp-deadline,.album-qr-note{animation-duration:7s}
+/* La fecha limite es una fila con icono: el padding negativo la descuadra */
+.rsvp-deadline{padding-left:0;padding-right:0;margin-left:0;margin-right:0}
+.rsvp-deadline svg{fill:#8A6A28}
+
+/* Version para FONDO OSCURO (hero sobre foto y mesa de regalos):
+   aqui si conviene el brillo casi blanco, porque contrasta contra la foto
+   en vez de diluirse. */
+.hero-bride,.hero-groom,.hero-amp,.hero-date,.hero-tag,
+#regalos .heading,#regalos .eyebrow,.gift-box-label{
+  background-image:linear-gradient(100deg,
+    #9A7830 0%,#C9A04E 10%,#E8D5A3 20%,#F5E6B8 27%,#FFFBEA 32%,#F5E6B8 37%,
+    #E8D5A3 46%,#C9A04E 58%,#E8D5A3 70%,#F5E6B8 80%,#C9A04E 90%,#9A7830 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  text-shadow:none;
+  animation:goldSweep 5s linear infinite;
+  padding-left:.34em;padding-right:.34em;
+  margin-left:-.34em;margin-right:-.34em;
+}
+/* El hero va sobre foto: necesita mas resplandor y una sombra que lo despegue */
+.hero-bride,.hero-groom{
+  filter:
+    drop-shadow(0 0 10px rgba(201,160,78,.7))
+    drop-shadow(0 0 28px rgba(201,160,78,.45))
+    drop-shadow(0 2px 6px rgba(0,0,0,.55));
+}
+.hero-amp,.hero-date,.hero-tag{
+  filter:drop-shadow(0 0 8px rgba(201,160,78,.5)) drop-shadow(0 1px 5px rgba(0,0,0,.6));
+}
+#regalos .heading,#regalos .eyebrow,.gift-box-label{
+  filter:drop-shadow(0 0 6px rgba(201,160,78,.4)) drop-shadow(0 0 18px rgba(201,160,78,.22));
+}
+
+@keyframes goldSweep{
+  0%{background-position:200% center}
+  100%{background-position:-200% center}
+}
+@media (prefers-reduced-motion:reduce){
+  .heading,.heading-sm,.loc-venue,.rsvp-title,.footer-names,.footer-date,
+  .hero-bride,.hero-groom,.hero-amp,.hero-date,.hero-tag,.eyebrow,.itin-time{animation:none}
+}
+
+/* ── SECCIONES ONICE ───────────────────────────────────────────────
+   Las texturas de fondo son negras con oro, asi que estas dos secciones
+   se invierten: fondo profundo y texto claro. El texto oscuro original
+   quedaria ilegible encima. */
+.sec-onyx{background:#0B0906;position:relative}
+.sec-onyx>*:not(.sec-bg){position:relative;z-index:1}
+/* Vineta para que el texto siempre caiga sobre zona oscura */
+.sec-onyx::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(11,9,6,.72) 0%,rgba(11,9,6,.5) 45%,rgba(11,9,6,.8) 100%)}
+.sec-onyx>*:not(.sec-bg){z-index:2}
+.sec-onyx .sub,.sec-onyx p,.sec-onyx .itin-ev{color:#F3E4D4}
+.sec-onyx .orn-line{background:linear-gradient(to right,transparent,rgba(201,160,78,.55),transparent)}
+.sec-onyx .orn-diamond,.sec-onyx .orn-diamond-sm{background:#C9A04E}
+.sec-onyx .itin-dot{background:#C9A04E;box-shadow:0 0 0 3px rgba(201,160,78,.18)}
+.sec-onyx .itin-dot.sage{background:#E8D5A3;box-shadow:0 0 0 3px rgba(232,213,163,.16)}
+.sec-onyx .itin-item::before,.sec-onyx .itin-list::before{background:rgba(201,160,78,.28)}
+
+/* Sobre fondo oscuro conviene el barrido claro: contrasta en vez de diluirse */
+.sec-onyx .heading,.sec-onyx .heading-sm,.sec-onyx .eyebrow,.sec-onyx .itin-time{
+  background-image:linear-gradient(100deg,
+    #9A7830 0%,#C9A04E 10%,#E8D5A3 20%,#F5E6B8 27%,#FFFBEA 32%,#F5E6B8 37%,
+    #E8D5A3 46%,#C9A04E 58%,#E8D5A3 70%,#F5E6B8 80%,#C9A04E 90%,#9A7830 100%);
+  filter:drop-shadow(0 0 8px rgba(201,160,78,.55)) drop-shadow(0 1px 4px rgba(0,0,0,.6));
+}
 </style>
 </head>
 <body>
@@ -469,14 +563,14 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   </section>
 
   <!-- INVITACIÓN -->
-  <section class="sec rv" style="text-align:center;overflow:hidden">
-    <div class="sec-bg" style="background-image:url('gracia.webp');opacity:.62"></div>
+  <section class="sec sec-onyx rv" style="text-align:center;overflow:hidden">
+    <div class="sec-bg" style="background-image:url('gracia.webp');opacity:.9"></div>
     <span class="eyebrow">Con la gracia de Dios</span>
     <div class="orn"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
     <h1 class="heading">Amanda y Jorge</h1>
-    <p class="sub" style="margin-top:8px;font-weight:600;color:var(--gold)">tienen el honor de invitarte a<br>su boda</p>
+    <p class="sub" style="margin-top:8px;font-weight:600;color:#E8D5A3">tienen el honor de invitarte a<br>su boda</p>
     <div class="orn bot"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
-    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--text);line-height:1.8;margin-top:24px;opacity:.8">
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:#F3E4D4;line-height:1.8;margin-top:24px;opacity:.92">
       Sábado, 21 de Noviembre de 2026<br>
       León, Guanajuato
     </p>
@@ -605,8 +699,8 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   </section>
 
   <!-- ITINERARIO -->
-  <section class="sec rv" style="text-align:center;overflow:hidden">
-    <div class="sec-bg" style="background-image:url('itiner.webp');opacity:.78"></div>
+  <section class="sec sec-onyx rv" style="text-align:center;overflow:hidden">
+    <div class="sec-bg" style="background-image:url('itiner.webp');opacity:.62"></div>
     <span class="eyebrow">Programa del Día</span>
     <h2 class="heading-sm">Itinerario</h2>
     <div class="orn" style="margin-top:16px"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
@@ -903,7 +997,8 @@ function initEnvelope(){
       playProm.catch(()=>{});
     }
     envVideo.addEventListener('ended',finish,{once:true});
-    setTimeout(finish,8000);
+    /* Red de seguridad: el video dura 8 s, damos margen para que gane "ended" */
+    setTimeout(finish,10500);
   }
   envScreen.addEventListener('click',onTap,{passive:false});
   envScreen.addEventListener('touchstart',onTap,{passive:false});
