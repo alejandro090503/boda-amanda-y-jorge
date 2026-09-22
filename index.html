@@ -581,7 +581,56 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   padding:14px 18px;margin:2px auto 4px;max-width:220px;
   box-shadow:0 8px 22px rgba(0,0,0,.4)}
 .gift-logo img{width:100%;height:auto;display:block}
-.gift-num{color:var(--gold-light)}
+.gift-num{color:#FDFDFC;font-weight:600;letter-spacing:.1em}
+.gift-modal-card .gift-num{color:#FDFDFC}
+
+/* ── TIPOGRAFIA DEL CLIENTE: Symphony Pro ──────────────────────────
+   Reemplaza a Great Vibes en los titulos caligraficos. Es la misma
+   fuente de boda-victoria-y-eduardo. */
+@font-face{font-family:'Symphony';src:url('symphony.woff?v=pro') format('woff');
+  font-weight:400;font-style:normal;font-display:swap}
+.hero-bride,.hero-groom,.heading,.heading-sm,.loc-venue,.rsvp-title,
+.footer-names,.fam-name{
+  font-family:'Symphony','Great Vibes',cursive!important}
+/* El titular de la cuenta es dato critico: en script no se lee */
+.gift-bank-name{font-family:'Cormorant Garamond',serif!important}
+/* Symphony tiene ojo mas chico que Great Vibes: se compensa el cuerpo */
+.hero-bride,.hero-groom{font-size:clamp(76px,23vw,104px)}
+.heading{font-size:62px}
+.heading-sm{font-size:47px}
+.loc-venue{font-size:42px}
+.rsvp-title{font-size:clamp(38px,7.8vw,51px)}
+.footer-names{font-size:58px}
+.fam-name{font-size:clamp(18px,4.8vw,22px)}
+/* El nombre largo sigue en serif: es dato critico y en script no se lee */
+.loc-venue.loc-venue--long{font-family:'Cormorant Garamond',serif!important}
+
+/* ── ZOOM DE LA GALERIA ────────────────────────────────────────────
+   La rueda 3D muestra las fotos muy chicas; al tocar una se abre
+   a pantalla completa. El tap se distingue del arrastre por umbral. */
+.wheel-card{cursor:pointer}
+.lb{position:fixed;inset:0;z-index:9500;background:rgba(10,9,6,.94);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;transition:opacity .3s ease,visibility 0s linear .3s}
+.lb.is-open{opacity:1;visibility:visible;transition:opacity .3s ease,visibility 0s}
+.lb-img{max-width:92vw;max-height:80vh;object-fit:contain;border-radius:4px;
+  border:1px solid rgba(215,194,137,.4);box-shadow:0 20px 60px rgba(0,0,0,.7);
+  transform:scale(.92);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.lb.is-open .lb-img{transform:scale(1)}
+.lb-close,.lb-nav{position:absolute;z-index:2;background:rgba(38,33,24,.82);
+  border:1px solid rgba(215,194,137,.4);color:var(--gold);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;border-radius:50%;
+  transition:background .25s}
+.lb-close:hover,.lb-nav:hover{background:rgba(215,194,137,.22)}
+.lb-close{top:18px;right:18px;width:42px;height:42px}
+.lb-close svg{width:18px;height:18px}
+.lb-nav{top:50%;transform:translateY(-50%);width:44px;height:44px}
+.lb-nav svg{width:20px;height:20px}
+.lb-prev{left:12px}
+.lb-next{right:12px}
+.lb-count{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
+  font-family:'Italiana',serif;font-size:13px;letter-spacing:.3em;color:var(--gold)}
 </style>
 </head>
 <body>
@@ -600,6 +649,20 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 </div>
 
 <div class="copy-toast" id="copyToast">¡Copiado!</div>
+
+<div class="lb" id="lightbox" aria-hidden="true">
+  <button class="lb-close" id="lbClose" type="button" aria-label="Cerrar">
+    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+  </button>
+  <button class="lb-nav lb-prev" id="lbPrev" type="button" aria-label="Anterior">
+    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="Siguiente">
+    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <img class="lb-img" id="lbImg" alt="Amanda y Jorge">
+  <span class="lb-count" id="lbCount"></span>
+</div>
 
 <div class="wrap">
 
@@ -693,19 +756,19 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
     <div class="fam-padrinos-grid" id="padrinosStack">
       <div class="fam-padrinos rv">
         <span class="fam-role-lbl">Velación</span>
-        <span class="fam-name">Eduardo Olmedo</span>
+        <span class="fam-name">Eduardo Olmedo López</span>
         <div class="fam-and"><div class="fam-and-line"></div><span class="fam-and-txt">y</span><div class="fam-and-line"></div></div>
-        <span class="fam-name">Elizabeth Pérez</span>
+        <span class="fam-name">Elizabeth Pérez Becerra</span>
       </div>
       <div class="fam-padrinos rv">
         <span class="fam-role-lbl">Arras</span>
-        <span class="fam-name">Fidelia Medina</span>
+        <span class="fam-name">Fidelia Medina Ramírez</span>
       </div>
       <div class="fam-padrinos rv">
         <span class="fam-role-lbl">Anillos</span>
-        <span class="fam-name">Olga Fuentes</span>
+        <span class="fam-name">Olga Fuentes Cedillo</span>
         <div class="fam-and"><div class="fam-and-line"></div><span class="fam-and-txt">y</span><div class="fam-and-line"></div></div>
-        <span class="fam-name">Emmanuel Hernández<svg class="fam-cross" viewBox="0 0 18 30" role="img" aria-label="finado"><path d="M8.25 1.1h1.5l.34 7.5h6.06l.35 1.5-.35 1.5h-6.06l-.34 17.4-.75.5-.75-.5-.34-17.4H1.85L1.5 10.1l.35-1.5h6.06z"/></svg></span>
+        <span class="fam-name">Emmanuel Hernández Fuentes<svg class="fam-cross" viewBox="0 0 18 30" role="img" aria-label="finado"><path d="M8.25 1.1h1.5l.34 7.5h6.06l.35 1.5-.35 1.5h-6.06l-.34 17.4-.75.5-.75-.5-.34-17.4H1.85L1.5 10.1l.35-1.5h6.06z"/></svg></span>
       </div>
       <div class="fam-padrinos rv">
         <span class="fam-role-lbl">Biblia y Rosario</span>
@@ -713,9 +776,9 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
       </div>
       <div class="fam-padrinos rv">
         <span class="fam-role-lbl">Copa y Vino</span>
-        <span class="fam-name">Jorge Donato</span>
+        <span class="fam-name">Jorge Donato Medina</span>
         <div class="fam-and"><div class="fam-and-line"></div><span class="fam-and-txt">y</span><div class="fam-and-line"></div></div>
-        <span class="fam-name">Conny</span>
+        <span class="fam-name">María Solís Rodríguez</span>
       </div>
     </div>
   </section>
@@ -824,7 +887,6 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 
     <span class="dc-avoid-lbl">Colores sugeridos</span>
     <div class="dc-avoid-row rv">
-      <div class="dc-avoid-sw"><div class="dc-avoid-circle" style="background:#2c4787;border:1px solid var(--border)"></div><span class="dc-avoid-name">Azul marino</span></div>
       <div class="dc-avoid-sw"><div class="dc-avoid-circle" style="background:#8f6938;border:1px solid var(--border)"></div><span class="dc-avoid-name">Café dorado</span></div>
       <div class="dc-avoid-sw"><div class="dc-avoid-circle" style="background:#226d34;border:1px solid var(--border)"></div><span class="dc-avoid-name">Verde bosque</span></div>
     </div>
@@ -844,17 +906,6 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
     </div>
   </section>
 
-  <!-- HOSPEDAJE -->
-  <section id="lodging" class="sec rv" style="text-align:center">
-    <span class="eyebrow">Para tu estancia</span>
-    <h2 class="heading-sm">Hospedaje Recomendado</h2>
-    <div class="orn" style="margin-top:16px"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
-    <p class="dc-text" style="margin-top:20px;margin-bottom:0">Si vienes de fuera, muy pronto compartiremos<br>nuestras opciones recomendadas en León.</p>
-
-    <div class="album-qr-wrap rv" style="margin-top:24px">
-      <span class="album-qr-note">Por confirmar</span>
-    </div>
-  </section>
 
   <!-- MESA DE REGALOS -->
   <section id="regalos" class="sec rv" style="text-align:center">
@@ -1153,10 +1204,22 @@ function initWheel(){
     isDrag=false;ring.classList.remove('dragging');
     rafId=requestAnimationFrame(inertia);
   }
-  ring.addEventListener('mousedown',e=>{e.preventDefault();pointerDown(e.clientX);});
+  /* Un tap corto sobre una card abre el zoom; si el dedo se movio, fue arrastre */
+  let downX=0,downT=0;
+  function maybeOpen(x,target){
+    if(Math.abs(x-downX)>8 || Date.now()-downT>500) return;
+    const card=target.closest && target.closest('.wheel-card');
+    if(card) window._lbOpen && window._lbOpen(card);
+  }
+  ring.addEventListener('mousedown',e=>{e.preventDefault();downX=e.clientX;downT=Date.now();pointerDown(e.clientX);});
+  ring.addEventListener('mouseup',e=>maybeOpen(e.clientX,e.target));
+  ring.addEventListener('touchend',e=>{
+    const t=e.changedTouches[0];
+    if(t) maybeOpen(t.clientX,document.elementFromPoint(t.clientX,t.clientY)||e.target);
+  });
   window.addEventListener('mousemove',e=>pointerMove(e.clientX));
   window.addEventListener('mouseup',pointerUp);
-  ring.addEventListener('touchstart',e=>pointerDown(e.touches[0].clientX),{passive:true});
+  ring.addEventListener('touchstart',e=>{downX=e.touches[0].clientX;downT=Date.now();pointerDown(e.touches[0].clientX);},{passive:true});
   ring.addEventListener('touchmove',e=>pointerMove(e.touches[0].clientX),{passive:true});
   ring.addEventListener('touchend',pointerUp);
 
@@ -1165,6 +1228,44 @@ function initWheel(){
     if(auto&&!isDrag){rot+=0.1;setRot();}
     requestAnimationFrame(spin);
   })();
+}
+
+/* ── LIGHTBOX DE LA GALERIA ── */
+function initLightbox(){
+  const lb=document.getElementById('lightbox');
+  const img=document.getElementById('lbImg');
+  const cnt=document.getElementById('lbCount');
+  if(!lb||!img)return;
+  const srcs=[...document.querySelectorAll('.wheel-card img')].map(i=>i.getAttribute('src'));
+  let idx=0;
+  function show(i){
+    idx=(i+srcs.length)%srcs.length;
+    img.src=srcs[idx];
+    if(cnt)cnt.textContent=(idx+1)+' / '+srcs.length;
+  }
+  function open(card){
+    const i=[...document.querySelectorAll('.wheel-card')].indexOf(card);
+    show(i<0?0:i);
+    lb.classList.add('is-open');
+    lb.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+  }
+  function close(){
+    lb.classList.remove('is-open');
+    lb.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+  }
+  window._lbOpen=open;
+  document.getElementById('lbClose').addEventListener('click',close);
+  document.getElementById('lbPrev').addEventListener('click',e=>{e.stopPropagation();show(idx-1);});
+  document.getElementById('lbNext').addEventListener('click',e=>{e.stopPropagation();show(idx+1);});
+  lb.addEventListener('click',e=>{if(e.target===lb||e.target===img)close();});
+  document.addEventListener('keydown',e=>{
+    if(!lb.classList.contains('is-open'))return;
+    if(e.key==='Escape')close();
+    if(e.key==='ArrowLeft')show(idx-1);
+    if(e.key==='ArrowRight')show(idx+1);
+  });
 }
 
 /* ── ÁLBUM QR PLACEHOLDER ── */
@@ -1192,6 +1293,7 @@ function initMain(){
   window.scrollTo(0,0);
   launchPetals();
   initWheel();
+  initLightbox();
   initQrPlaceholder();
 
   /* Countdown */
