@@ -631,6 +631,22 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 .lb-next{right:12px}
 .lb-count{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
   font-family:'Italiana',serif;font-size:13px;letter-spacing:.3em;color:var(--gold)}
+
+/* ── PORTADA: los novios quedan en la mitad baja de la foto ──────
+   Los textos suben a la zona del follaje para no taparlos. */
+#hero{align-items:flex-start}
+.hero-content{padding-top:max(6vh,44px)}
+.hero-bride,.hero-groom{font-size:clamp(58px,17vw,82px)!important;line-height:1}
+.hero-amp{font-size:34px;margin:.02em 0}
+.hero-date{margin-top:12px}
+.hero-tag{margin-top:8px}
+/* Encuadre: en escritorio la foto se recorta en alto; se ancla abajo
+   para no perder a los novios */
+.hero-bg{background-position:center 62%}
+/* Velo: oscuro arriba donde va el texto, limpio sobre los novios */
+.hero-veil{background:linear-gradient(to bottom,
+  rgba(10,10,10,.62) 0%,rgba(10,10,10,.42) 28%,rgba(10,10,10,.06) 48%,
+  rgba(10,10,10,0) 72%,rgba(10,10,10,.35) 100%)}
 </style>
 </head>
 <body>
@@ -832,21 +848,20 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
     <div class="orn" style="margin-top:16px"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
     <div class="itin-list">
       <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">4:00 p.m.</div><div class="itin-ev">Ceremonia religiosa</div></div>
-      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">5:00 p.m.</div><div class="itin-ev">Salida de los novios y felicitaciones</div></div>
-      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">5:20 p.m.</div><div class="itin-ev">Sesión de fotos · Serenata</div></div>
-      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">7:00 p.m.</div><div class="itin-ev">Recepción y cóctel de bienvenida</div></div>
-      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">8:00 p.m.</div><div class="itin-ev">Entrada de los novios</div></div>
-      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">8:20 p.m.</div><div class="itin-ev">Brindis</div></div>
-      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">8:30 p.m.</div><div class="itin-ev">Cena</div></div>
-      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">9:00 p.m.</div><div class="itin-ev">Primer baile de los novios</div></div>
-      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">9:45 p.m.</div><div class="itin-ev">Baile con los padres</div></div>
-      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">9:55 p.m.</div><div class="itin-ev">Fotos · Transición</div></div>
-      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">10:00 p.m.</div><div class="itin-ev">¡Abrimos pista!</div></div>
-      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">10:30 p.m.</div><div class="itin-ev">Música y fiesta</div></div>
-      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">11:00 p.m.</div><div class="itin-ev">Lanzamiento del ramo</div></div>
-      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">11:20 p.m.</div><div class="itin-ev">Corte del pastel</div></div>
-      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">12:30 a.m.</div><div class="itin-ev">Trasnochado</div></div>
-      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">3:30 a.m.</div><div class="itin-ev">Fin de la boda</div></div>
+      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">5:00 p.m.</div><div class="itin-ev">Salida de novios</div></div>
+      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">7:00 – 7:30 p.m.</div><div class="itin-ev">Recepción y cóctel de bienvenida</div></div>
+      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">7:35 p.m.</div><div class="itin-ev">Entrada de novios</div></div>
+      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">7:40 p.m.</div><div class="itin-ev">Brindis</div></div>
+      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">7:50 p.m.</div><div class="itin-ev">Cena</div></div>
+      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">9:15 p.m.</div><div class="itin-ev">Table dash game</div></div>
+      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">9:15 p.m.</div><div class="itin-ev">Vals de novios</div></div>
+      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">9:25 p.m.</div><div class="itin-ev">¡Abrimos pista!</div></div>
+      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">10:30 p.m.</div><div class="itin-ev">Corte del pastel</div></div>
+      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">10:35 p.m.</div><div class="itin-ev">Lanzamiento del ramo</div></div>
+      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">10:40 p.m.</div><div class="itin-ev">Víbora</div></div>
+      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">12:00 a.m.</div><div class="itin-ev">Trasnochado</div></div>
+      <div class="itin-item rv"><div class="itin-dot sage"></div><div class="itin-time">1:30 a.m.</div><div class="itin-ev">Banda</div></div>
+      <div class="itin-item rv"><div class="itin-dot"></div><div class="itin-time">3:30 a.m.</div><div class="itin-ev">Fin de la boda 🥂</div></div>
     </div>
   </section>
 
