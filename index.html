@@ -648,33 +648,32 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   rgba(10,10,10,.62) 0%,rgba(10,10,10,.42) 28%,rgba(10,10,10,.06) 48%,
   rgba(10,10,10,0) 72%,rgba(10,10,10,.35) 100%)}
 
-/* ── FOTOS QUE LEVITAN ─────────────────────────────────────────────
-   Cinco fotos entre secciones, flotando con un destello dorado que las
-   cruza. Solo se anima transform (el brillo es un ::after que se
-   desplaza), para no cargar la memoria de capas en iPhone. */
-.flota{position:relative;z-index:3;height:0;pointer-events:none}
-.flota-in{position:absolute;top:-64px;width:138px;aspect-ratio:3/4;
-  border-radius:10px;overflow:hidden;
-  border:2px solid rgba(215,194,137,.75);
-  box-shadow:0 14px 34px rgba(0,0,0,.55),0 0 22px rgba(215,194,137,.35);
+
+/* ── SECCIONES DE FOTO ─────────────────────────────────────────────
+   Cinco fotos repartidas por la invitacion, cada una en su propia
+   seccion: flotan suavemente y un destello dorado las cruza. Se anima
+   solo transform (el brillo es un ::after que se desplaza). */
+.sec-foto{position:relative;padding:44px 24px;display:flex;justify-content:center;
+  background:radial-gradient(ellipse at center,rgba(215,194,137,.13) 0%,transparent 62%),var(--bg)}
+.sf-marco{position:relative;width:min(68vw,300px);aspect-ratio:3/4;border-radius:12px;overflow:hidden;
+  border:2px solid rgba(215,194,137,.8);
+  box-shadow:0 18px 40px rgba(0,0,0,.55),0 0 30px rgba(215,194,137,.3);
   animation:levita 6.5s ease-in-out infinite}
-.flota--izq .flota-in{left:14px;--rot:-5deg}
-.flota--der .flota-in{right:14px;--rot:5deg;animation-delay:-3.2s}
-.flota-in img{width:100%;height:100%;object-fit:cover;display:block}
-.flota-in::after{content:'';position:absolute;top:0;left:0;width:60%;height:100%;
-  background:linear-gradient(105deg,transparent 0%,rgba(255,246,214,.0) 30%,
-    rgba(255,246,214,.55) 50%,rgba(255,246,214,0) 70%,transparent 100%);
-  transform:translateX(-180%) skewX(-12deg);
-  animation:destello 4.8s ease-in-out infinite}
-.flota--der .flota-in::after{animation-delay:-2.4s}
+.sec-foto--izq .sf-marco{--rot:-2.5deg;margin-right:14%}
+.sec-foto--der .sf-marco{--rot:2.5deg;margin-left:14%;animation-delay:-3.2s}
+.sf-marco img{width:100%;height:100%;object-fit:cover;display:block}
+.sf-marco::after{content:'';position:absolute;top:0;left:0;width:60%;height:100%;
+  background:linear-gradient(105deg,transparent 0%,rgba(255,246,214,0) 30%,
+    rgba(255,246,214,.5) 50%,rgba(255,246,214,0) 70%,transparent 100%);
+  transform:translateX(-180%) skewX(-12deg);animation:destello 5s ease-in-out infinite}
+.sec-foto--der .sf-marco::after{animation-delay:-2.5s}
 @keyframes levita{
   0%,100%{transform:translateY(0) rotate(var(--rot))}
-  50%{transform:translateY(-14px) rotate(calc(var(--rot) * -.4))}}
+  50%{transform:translateY(-12px) rotate(calc(var(--rot) * -.5))}}
 @keyframes destello{
   0%,55%{transform:translateX(-180%) skewX(-12deg)}
   100%{transform:translateX(260%) skewX(-12deg)}}
-@media (min-width:700px){.flota-in{width:170px;top:-110px}}
-@media (prefers-reduced-motion:reduce){.flota-in,.flota-in::after{animation:none}}
+@media (prefers-reduced-motion:reduce){.sf-marco,.sf-marco::after{animation:none}}
 </style>
 </head>
 <body>
@@ -748,7 +747,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   </section>
 
 
-  <div class="flota flota--izq" aria-hidden="true"><div class="flota-in"><img src="flota1.jpg" alt="" loading="eager"></div></div>
+  <section class="sec-foto sec-foto--izq" aria-hidden="true"><div class="sf-marco"><img src="flota1.jpg" alt="" loading="eager"></div></section>
   <!-- CUENTA REGRESIVA -->
   <section id="scd" class="sec-sm rv" style="text-align:center">
     <span class="eyebrow">Faltan</span>
@@ -830,7 +829,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   </section>
 
 
-  <div class="flota flota--der" aria-hidden="true"><div class="flota-in"><img src="flota2.jpg" alt="" loading="eager"></div></div>
+  <section class="sec-foto sec-foto--der" aria-hidden="true"><div class="sf-marco"><img src="flota2.jpg" alt="" loading="eager"></div></section>
   <!-- UBICACIÓN -->
   <section id="subic" class="sec rv" style="text-align:center">
     <span class="eyebrow">Dónde Celebramos</span>
@@ -898,7 +897,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   </section>
 
 
-  <div class="flota flota--izq" aria-hidden="true"><div class="flota-in"><img src="flota3.jpg" alt="" loading="eager"></div></div>
+  <section class="sec-foto sec-foto--izq" aria-hidden="true"><div class="sf-marco"><img src="flota3.jpg" alt="" loading="eager"></div></section>
   <!-- GALERÍA — RUEDA 3D -->
   <section id="galeria" class="sec-sm rv" style="text-align:center;overflow:visible" aria-label="Galería de fotos">
     <span class="eyebrow">Nuestra Historia</span>
@@ -960,7 +959,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 
 
 
-  <div class="flota flota--der" aria-hidden="true"><div class="flota-in"><img src="flota4.jpg" alt="" loading="eager"></div></div>
+  <section class="sec-foto sec-foto--der" aria-hidden="true"><div class="sf-marco"><img src="flota4.jpg" alt="" loading="eager"></div></section>
   <!-- MESA DE REGALOS -->
   <section id="regalos" class="sec rv" style="text-align:center">
     <span class="eyebrow">Mesa de Regalos</span>
@@ -1030,7 +1029,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   </section>
 
 
-  <div class="flota flota--izq" aria-hidden="true"><div class="flota-in"><img src="flota5.jpg" alt="" loading="eager"></div></div>
+  <section class="sec-foto sec-foto--izq" aria-hidden="true"><div class="sf-marco"><img src="flota5.jpg" alt="" loading="eager"></div></section>
   <!-- RSVP -->
   <section id="rsvp" class="sec rv" style="text-align:center;overflow:hidden;position:relative">
     <div class="sec-bg" style="background:radial-gradient(circle at 20% 15%,rgba(215,194,137,.12),transparent 45%),radial-gradient(circle at 80% 85%,rgba(215,194,137,.16),transparent 50%);opacity:1"></div>
