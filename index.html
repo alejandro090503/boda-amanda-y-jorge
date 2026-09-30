@@ -1081,7 +1081,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
         </div>
         <div id="rsvp-bandeja">
           <div class="rsvp-pases-display" id="rsvp-pases-display">
-            <div class="rsvp-pases-label">Pases reservados</div>
+            <div class="rsvp-pases-label" id="rsvp-pases-label">Pases reservados</div>
             <div class="rsvp-pases-num" id="rsvp-pases-num">1</div>
           </div>
           <div class="rsvp-toggle">
@@ -1097,6 +1097,16 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
               <button class="rsvp-contador-btn" id="rsvp-mas" type="button" aria-label="Agregar un pase">+</button>
             </div>
             <p class="rsvp-contador-pie" id="rsvp-contador-pie"></p>
+          </div>
+          <!-- Contador de menores: solo aparece si la invitación trae pases para menores -->
+          <div class="rsvp-contador-wrap" id="rsvp-menores-wrap">
+            <p class="rsvp-contador-nota" id="rsvp-menores-nota"></p>
+            <div class="rsvp-contador">
+              <button class="rsvp-contador-btn" id="rsvp-menores-menos" type="button" aria-label="Quitar un menor">−</button>
+              <span class="rsvp-contador-valor" id="rsvp-menores-valor" aria-live="polite">0</span>
+              <button class="rsvp-contador-btn" id="rsvp-menores-mas" type="button" aria-label="Agregar un menor">+</button>
+            </div>
+            <p class="rsvp-contador-pie" id="rsvp-menores-pie"></p>
           </div>
           <div class="rsvp-fields" id="rsvp-fields" style="display:none"></div>
           <button type="button" id="rsvpSubmitBtn" class="rsvp-btn">
@@ -1440,27 +1450,32 @@ function initMain(){
         var bin = atob(b64), bytes = new Uint8Array(bin.length);
         for(var i=0;i<bin.length;i++){ bytes[i] = bin.charCodeAt(i); }
         var pr = new TextDecoder().decode(bytes).split('|');
-        return { para:(pr[0]||'').trim(), pases: parseInt(pr[1],10) || 1 };
+        return { para:(pr[0]||'').trim(), pases: parseInt(pr[1],10) || 1, menores: parseInt(pr[2],10) || 0 };
       }catch(e){ return null; }
     }
 
     var qp = new URLSearchParams(window.location.search);
-    var urlPara = '', rawP = 1;
+    var urlPara = '', rawP = 1, rawM = 0;
     var token = qp.get('i');
     if(token){
       var dec = decodeInvite(token);
-      if(dec && dec.para){ urlPara = dec.para; rawP = dec.pases; }
+      if(dec && dec.para){ urlPara = dec.para; rawP = dec.pases; rawM = dec.menores; }
     }
     if(!urlPara){
       urlPara = (qp.get('para') || '').trim();
       rawP    = parseInt(qp.get('pases'), 10);
+      rawM    = parseInt(qp.get('menores') || '0', 10);
     }
     /* Tope: lo que los novios asignaron en el panel */
     var pasesAsignados = (isNaN(rawP) || rawP < 1 || rawP > 20) ? 1 : rawP;
     /* Lo que el invitado va a ocupar: arranca en 1 y nunca pasa del tope */
     var pasesAUsar = 1;
+    /* Pases para menores: tienen su propio contador, que arranca en 0 */
+    var pasesMenores = (isNaN(rawM) || rawM < 0 || rawM > 20) ? 0 : rawM;
+    var menoresAUsar = 0;
+    var MARCA_MENOR = ' (Menor)';
 
-    var rsvpChoice = null, savedNames = [], bloqueado = false;
+    var rsvpChoice = null, savedNames = [], savedMenores = [], bloqueado = false;
     var noteEl    = document.getElementById('rsvp-pases-note');
     var dispEl    = document.getElementById('rsvp-pases-display');
     var numEl     = document.getElementById('rsvp-pases-num');
@@ -1482,7 +1497,22 @@ function initMain(){
     var btnConf   = document.getElementById('rsvpSubmitBtn');
     var btnText   = document.getElementById('rsvpBtnText');
     var feedEl    = document.getElementById('rsvp-feedback');
+    var lblEl     = document.getElementById('rsvp-pases-label');
+    var menWrap   = document.getElementById('rsvp-menores-wrap');
+    var menNota   = document.getElementById('rsvp-menores-nota');
+    var menValor  = document.getElementById('rsvp-menores-valor');
+    var menPie    = document.getElementById('rsvp-menores-pie');
+    var menMenos  = document.getElementById('rsvp-menores-menos');
+    var menMas    = document.getElementById('rsvp-menores-mas');
     if(!btnConf || !btnYes) return;
+
+    /* El panel guarda a los menores con la marca " (Menor)" para distinguirlos */
+    function esMenor(n){ return /\(menor\)\s*$/i.test(String(n || '')); }
+    function sinMarca(n){ return String(n || '').replace(/\s*\(menor\)\s*$/i, ''); }
+    function repartir(lista){
+      savedNames = []; savedMenores = [];
+      (lista || []).forEach(function(n){ if(esMenor(n)) savedMenores.push(sinMarca(n)); else savedNames.push(n); });
+    }
 
     function setFeedback(msg, color){
       if(!feedEl) return;
@@ -1491,7 +1521,10 @@ function initMain(){
     }
 
     function pintaEncabezado(){
-      if(numEl) numEl.textContent = pasesAsignados;
+      if(numEl) numEl.textContent = pasesAsignados + pasesMenores;
+      if(lblEl) lblEl.textContent = pasesMenores > 0
+        ? pasesAsignados + (pasesAsignados === 1 ? ' adulto' : ' adultos') + ' + ' + pasesMenores + (pasesMenores === 1 ? ' menor' : ' menores')
+        : 'Pases reservados';
       if(!urlPara || !noteEl) return;
       noteEl.textContent = T(
         'Esta invitación es para ' + urlPara + '.',
@@ -1499,21 +1532,37 @@ function initMain(){
       noteEl.style.display = 'block';
     }
 
-    function renderFields(n){
-      Array.prototype.forEach.call(fieldsEl.querySelectorAll('.rsvp-input'), function(inp,i){ savedNames[i] = inp.value; });
+    /* Un campo por pase que se va a usar: primero adultos, luego menores */
+    function guardaCampos(){
+      Array.prototype.forEach.call(fieldsEl.querySelectorAll('.rsvp-input'), function(inp){
+        var idx = +inp.getAttribute('data-idx');
+        if(inp.getAttribute('data-menor')) savedMenores[idx] = inp.value; else savedNames[idx] = inp.value;
+      });
+    }
+    function campo(placeholder, idx, menor){
+      var inp = document.createElement('input');
+      inp.type = 'text'; inp.className = 'rsvp-input';
+      inp.placeholder = placeholder;
+      inp.setAttribute('aria-label', placeholder);
+      inp.setAttribute('data-idx', idx);
+      if(menor) inp.setAttribute('data-menor', '1');
+      inp.autocomplete = 'off'; inp.maxLength = 60; inp.disabled = frozen || bloqueado;
+      /* Sin prellenar con el nombre de la invitación: "Familia X" no es una persona */
+      inp.value = (menor ? savedMenores[idx] : savedNames[idx]) || '';
+      inp.addEventListener('input', function(){
+        if(menor) savedMenores[idx] = this.value; else savedNames[idx] = this.value;
+        this.classList.remove('rsvp-input-falta');
+      });
+      fieldsEl.appendChild(inp);
+    }
+    function renderFields(){
+      guardaCampos();
       fieldsEl.innerHTML = '';
-      for(var i=0;i<n;i++){
-        var inp = document.createElement('input');
-        inp.type = 'text'; inp.className = 'rsvp-input';
-        inp.placeholder = n===1
-          ? T('Tu nombre completo','Your full name')
-          : T('Nombre del invitado ' + (i+1), 'Guest ' + (i+1) + ' full name');
-        inp.setAttribute('aria-label', inp.placeholder);
-        inp.autocomplete = 'off'; inp.maxLength = 60; inp.disabled = frozen || bloqueado;
-        /* Sin prellenar con el nombre de la invitación: "Familia X" no es una persona */
-        inp.value = savedNames[i] || '';
-        (function(idx){ inp.addEventListener('input', function(){ savedNames[idx]=this.value; this.classList.remove('rsvp-input-falta'); }); })(i);
-        fieldsEl.appendChild(inp);
+      for(var i=0;i<pasesAUsar;i++){
+        campo(pasesAUsar === 1 && menoresAUsar === 0 ? 'Tu nombre completo' : 'Nombre del invitado ' + (i+1), i, false);
+      }
+      for(var j=0;j<menoresAUsar;j++){
+        campo('Nombre del menor ' + (j+1), j, true);
       }
     }
 
@@ -1522,10 +1571,10 @@ function initMain(){
       contValor.textContent = pasesAUsar;
       btnMenos.disabled = cerrado || pasesAUsar <= 1;
       btnMas.disabled   = cerrado || pasesAUsar >= pasesAsignados;
+      /* Con pases de menores se aclara que este contador es el de adultos */
       contNota.textContent = pasesAsignados === 1
-        ? T('Tienes 1 pase reservado para ti.', 'You have 1 seat reserved for you.')
-        : T('Tienes ' + pasesAsignados + ' pases reservados. Aumenta el número de pases que vayas a ocupar.',
-            'You have ' + pasesAsignados + ' seats reserved. Increase the number of seats you will use.');
+        ? (pasesMenores > 0 ? 'Tienes 1 pase de adulto.' : 'Tienes 1 pase reservado para ti.')
+        : 'Tienes ' + pasesAsignados + (pasesMenores > 0 ? ' pases para adultos' : ' pases reservados') + '. Aumenta el número de pases que vayas a ocupar.';
       var multi = pasesAsignados > 1;
       contBox.style.display = multi ? 'flex' : 'none';
       contPie.style.display = multi ? 'block' : 'none';
@@ -1539,9 +1588,30 @@ function initMain(){
       if(n === pasesAUsar) return;
       pasesAUsar = n;
       pintaContador();
-      renderFields(pasesAUsar);
+      renderFields();
       setFeedback('');
     }
+    function pintaMenores(){
+      var cerrado = frozen || bloqueado;
+      menWrap.style.display = (rsvpChoice === 'yes' && pasesMenores > 0) ? 'block' : 'none';
+      menValor.textContent = menoresAUsar;
+      menMenos.disabled = cerrado || menoresAUsar <= 0;
+      menMas.disabled   = cerrado || menoresAUsar >= pasesMenores;
+      menNota.textContent = pasesMenores === 1
+        ? 'También tienes 1 pase para un menor. Súmalo si asistirá.'
+        : 'También tienes ' + pasesMenores + ' pases para menores. Aumenta el número de menores que asistirán.';
+      menPie.textContent = menoresAUsar + ' de ' + pasesMenores + (pasesMenores === 1 ? ' pase de menor' : ' pases de menores');
+    }
+    function setMenores(n){
+      n = Math.max(0, Math.min(pasesMenores, n));
+      if(n === menoresAUsar) return;
+      menoresAUsar = n;
+      pintaMenores();
+      renderFields();
+      setFeedback('');
+    }
+    menMenos.addEventListener('click', function(){ if(!frozen && !bloqueado) setMenores(menoresAUsar - 1); });
+    menMas.addEventListener('click',   function(){ if(!frozen && !bloqueado) setMenores(menoresAUsar + 1); });
     btnMenos.addEventListener('click', function(){ if(!frozen && !bloqueado) setPases(pasesAUsar - 1); });
     btnMas.addEventListener('click',   function(){ if(!frozen && !bloqueado) setPases(pasesAUsar + 1); });
 
@@ -1552,12 +1622,14 @@ function initMain(){
         btnNo.className  = 'rsvp-toggle-btn';
         contWrap.style.display = 'block';
         pintaContador();
-        renderFields(pasesAUsar);
+        pintaMenores();
+        renderFields();
         fieldsEl.style.display = 'flex';
       } else {
         btnYes.className = 'rsvp-toggle-btn';
         btnNo.className  = 'rsvp-toggle-btn selected-no';
         contWrap.style.display = 'none';
+        menWrap.style.display = 'none';
         fieldsEl.style.display = 'none';
       }
     }
@@ -1593,7 +1665,7 @@ function initMain(){
     function applyFreeze(){
       if(!frozen) return;
       btnYes.disabled = true; btnNo.disabled = true; btnConf.disabled = true; editarBtn.disabled = true;
-      btnMenos.disabled = true; btnMas.disabled = true;
+      btnMenos.disabled = true; btnMas.disabled = true; menMenos.disabled = true; menMas.disabled = true;
       var ins = fieldsEl.querySelectorAll('.rsvp-input');
       for(var i=0;i<ins.length;i++){ ins[i].disabled = true; }
       btnText.textContent = T('Fecha límite alcanzada','RSVP deadline passed');
@@ -1603,7 +1675,7 @@ function initMain(){
     function cierraPorBloqueo(){
       bloqueado = true;
       btnYes.disabled = true; btnNo.disabled = true; btnConf.disabled = true;
-      btnMenos.disabled = true; btnMas.disabled = true;
+      btnMenos.disabled = true; btnMas.disabled = true; menMenos.disabled = true; menMas.disabled = true;
       var ins = fieldsEl.querySelectorAll('.rsvp-input');
       for(var i=0;i<ins.length;i++){ ins[i].disabled = true; }
       btnText.textContent = T('Confirmaciones cerradas','RSVP closed');
@@ -1629,12 +1701,14 @@ function initMain(){
           }
           if(d && typeof d.pases === 'number' && d.pases > 0 && d.pases <= 20){ pasesAsignados = d.pases; }
           if(pasesAUsar > pasesAsignados) pasesAUsar = pasesAsignados;
+          if(typeof d.pases_menores === 'number' && d.pases_menores >= 0 && d.pases_menores <= 20){ pasesMenores = d.pases_menores; }
           pintaEncabezado();
           if(!frozen){ btnYes.disabled = false; btnNo.disabled = false; }
           if(d && (d.estado === 'confirmado' || d.estado === 'declino')){
-            if(d.nombres_confirmados && d.nombres_confirmados.length){ savedNames = d.nombres_confirmados.slice(); }
-            /* El contador arranca en cuántos pases había ocupado antes */
+            if(d.nombres_confirmados && d.nombres_confirmados.length){ repartir(d.nombres_confirmados); }
+            /* Los contadores arrancan en cuántos pases había ocupado antes */
             pasesAUsar = Math.min(pasesAsignados, Math.max(1, savedNames.length));
+            menoresAUsar = Math.min(pasesMenores, savedMenores.length);
             selectRsvp(d.estado === 'confirmado' ? 'yes' : 'no');
             btnText.textContent = T('Actualizar respuesta','Update my answer');
             mostrarGracias(d.estado, d.nombres_confirmados || []);
@@ -1671,7 +1745,11 @@ function initMain(){
       var nombres = [];
       if(rsvpChoice === 'yes'){
         var inputs = fieldsEl.querySelectorAll('.rsvp-input');
-        for(var i=0;i<inputs.length;i++){ var v = inputs[i].value.trim(); if(v) nombres.push(v); }
+        for(var i=0;i<inputs.length;i++){
+          var v = inputs[i].value.trim();
+          if(v) nombres.push(inputs[i].getAttribute('data-menor') ? sinMarca(v) + MARCA_MENOR : v);
+        }
+        var totalAUsar = pasesAUsar + menoresAUsar;
         if(nombres.length === 0){ setFeedback(T('Por favor escribe al menos un nombre.','Please write at least one name.'), ROJO); return; }
         /* Dos personas en un solo campo ("Ana & Luis") se guardaban como UNA:
            el panel contaba un lugar de menos. Se pide un nombre por campo. */
@@ -1687,15 +1765,15 @@ function initMain(){
           doble.focus({ preventScroll:true });
           return;
         }
-        if(nombres.length < pasesAUsar){
-          var faltan = pasesAUsar - nombres.length, primero = null;
+        if(nombres.length < totalAUsar){
+          var faltan = totalAUsar - nombres.length, primero = null;
           /* Se marcan los campos vacíos para que se note cuál falta */
           for(var k=0;k<inputs.length;k++){
             var vacio = !inputs[k].value.trim();
             inputs[k].classList.toggle('rsvp-input-falta', vacio);
             if(vacio && !primero) primero = inputs[k];
           }
-          setFeedback(T('Elegiste ' + pasesAUsar + ' pases pero escribiste ' + nombres.length + ' nombre' + (nombres.length===1?'':'s') + '. Escribe ' + (faltan===1 ? 'el nombre que falta' : 'los ' + faltan + ' nombres que faltan') + ' o baja el contador a los pases que vas a utilizar.',
+          setFeedback(T('Elegiste ' + totalAUsar + ' pases pero escribiste ' + nombres.length + ' nombre' + (nombres.length===1?'':'s') + '. Escribe ' + (faltan===1 ? 'el nombre que falta' : 'los ' + faltan + ' nombres que faltan') + ' o baja el contador a los pases que vas a utilizar.',
                         'You chose ' + pasesAUsar + ' seats but wrote ' + nombres.length + ' name' + (nombres.length===1?'':'s') + '. Write the missing name' + (faltan===1?'':'s') + ' or lower the counter to the seats you will use.'), ROJO);
           if(feedEl) feedEl.scrollIntoView({ block:'nearest', behavior:'smooth' });
           if(primero) primero.focus({ preventScroll:true });
