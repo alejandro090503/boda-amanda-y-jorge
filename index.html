@@ -695,6 +695,24 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
   0%,55%{transform:translateX(-180%) skewX(-12deg)}
   100%{transform:translateX(260%) skewX(-12deg)}}
 @media (prefers-reduced-motion:reduce){.sf-marco,.sf-marco::after{animation:none}}
+
+/* ── IDEAS DE REGALO (Mercado Libre) ───────────────────────────────
+   Tarjetas de producto dentro del modal de regalos. La foto va sobre
+   papel claro porque las fotos de tienda traen fondo blanco. Sin precio:
+   cambia a diario en la tienda. */
+.ml-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;width:100%}
+.ml-card{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;
+  background:rgba(215,194,137,.06);border:1px solid rgba(215,194,137,.35);border-radius:10px;
+  padding:10px 8px 12px;transition:border-color .25s,transform .25s}
+.ml-card:hover{border-color:rgba(215,194,137,.7);transform:translateY(-2px)}
+.ml-img{width:100%;aspect-ratio:1/1;background:#fff;border-radius:7px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center}
+.ml-img img{width:100%;height:100%;object-fit:contain;display:block}
+.ml-name{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;line-height:1.3;
+  color:#FDFDFC;text-align:center}
+.ml-cta{display:inline-flex;align-items:center;gap:5px;font-family:'Italiana',serif;font-size:11px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.ml-cta svg{width:12px;height:12px}
 </style>
 </head>
 <body>
@@ -1027,6 +1045,24 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
           Ver mesa
         </a>
+      </div>
+
+      <div class="gift-acct-sep"><span></span><small>o bien</small><span></span></div>
+
+      <div class="gift-acct">
+        <span class="gift-bank-lbl">Ideas de regalo · Mercado Libre</span>
+        <div class="ml-grid">
+          <a class="ml-card" href="https://articulo.mercadolibre.com.mx/MLM-2477147609" target="_blank" rel="noopener">
+            <div class="ml-img"><img src="regalo-robot.webp" alt="Robot aspiradora y trapeadora" loading="eager"></div>
+            <span class="ml-name">Robot aspiradora y trapeadora</span>
+            <span class="ml-cta">Ver <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+          </a>
+          <a class="ml-card" href="https://articulo.mercadolibre.com.mx/MLM-3134920527" target="_blank" rel="noopener">
+            <div class="ml-img"><img src="regalo-cojines.webp" alt="Pack de 4 cojines decorativos" loading="eager"></div>
+            <span class="ml-name">Pack de 4 cojines decorativos</span>
+            <span class="ml-cta">Ver <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
